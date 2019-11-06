@@ -155,7 +155,7 @@ list_content_nextcloud_share_url () {
       | cut -f 2,6,8,10 \
       | sed \
           -e '/^\// ! d' \
-          -e 's@^/public.php/webdav@@';
+          -e 's@.*/public.php/webdav@@';
     )
 
     # Print each file/subdir info line with a ascending number in front of it.
