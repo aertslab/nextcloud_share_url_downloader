@@ -156,8 +156,6 @@ list_content_nextcloud_share_url () {
       | sed \
           -e '/^\// ! d' \
           -e 's@^/public.php/webdav@@';
-# \
-#          -e 's@^/@'"${nextcloud_host_url}"'/@'
     )
 
     # Print each file/subdir info line with a ascending number in front of it.
@@ -251,19 +249,6 @@ main () {
 	    download_file_from_nextcloud_share "${nextcloud_host_url}/public.php/webdav${nextcloud_file_or_dir_name}" $(basename "${nextcloud_file_or_dir_name}");
         fi
     done
-
-#        # Get NextCloud download URL for the file from the first column.
-#        nextcloud_download_url_file="${nextcloud_dir_listing_array[${file_or_dir_number}]}";
-#        nextcloud_download_url_file="${nextcloud_host_url}/public.php/webdav${nextcloud_download_url_file%%$'\t'*}";
-
-#        if [ "${nextcloud_download_url_file:$(( ${#nextcloud_download_url_file} - 1 ))}" = '/' ] ; then
-            # File is a subdirectory, store for later listening of content.
-#            nextcloud_share_list_selected_subdirs+=("${nextcloud_download_url_file#*/webdav/}");
-#        else
-	    # Download file from NextCloud share.
-#	    download_file_from_nextcloud_share "${nextcloud_download_url_file}" $(basename "${nextcloud_download_url_file}");
-#        fi
-#    done
 
     # List content of selected subdirectories.
     for nextcloud_share_list_selected_subdir in "${nextcloud_share_list_selected_subdirs[@]}" ; do
