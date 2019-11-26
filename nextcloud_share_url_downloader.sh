@@ -193,6 +193,7 @@ download_file_from_nextcloud_share () {
     printf '  - Output filename:         output_filename="%s"\n\n' "${output_filename}";
 
     curl \
+        -C - \
         -u "${nextcloud_share_token}:${nextcloud_share_password}" \
         -o "${output_filename}" \
         "${nextcloud_webdav_file_url}";
