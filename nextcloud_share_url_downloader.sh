@@ -173,12 +173,7 @@ download_file_from_nextcloud_share () {
 
     local nextcloud_webdav_file_url="${1}";
     local output_filename="${2}";
-
-    if [ -e "${output_filename}" ] ; then
-        printf '\nError: Output filename "%s" already exists.\n\n' "${output_filename}";
-        return 1;
-    fi
-
+    local resume_or_restart='';
 
     if [ $(type curl >/dev/null 2>&1; echo $?) -ne 0 ] ; then
         printf '\nError: "curl" is not installed.\n\n';
@@ -192,13 +187,52 @@ download_file_from_nextcloud_share () {
     printf '  - NextCloud share subdir:  nextcloud_share_subdir="%s"\n' "${nextcloud_share_subdir}";
     printf '  - Output filename:         output_filename="%s"\n\n' "${output_filename}";
 
-    curl \
-        -C - \
-        -u "${nextcloud_share_token}:${nextcloud_share_password}" \
-        -o "${output_filename}" \
-        "${nextcloud_webdav_file_url}";
+    if [ -e "${output_filename}" ] ; then
+        printf 'Warning: Output filename "%s" already exists.\n\n' "${output_filename}";
+
+        while [[ "${resume_or_restart}" != 'R'  && "${resume_or_restart}" != 'S' ]] ; do
+            read -p 'Do you want to (R)esume or re(S)tart the download or (C)ancel? ' resume_or_restart;
+
+            # Convert answer to uppercase.
+            resume_or_restart=$(printf '%s' "${resume_or_restart}" | tr '[a-z]' '[A-Z]');
+
+            if [ "${resume_or_restart}" = 'C' ] ; then
+                printf '\n';
+
+                return 1;
+            fi
+        done
+
+        printf '\n';
+    fi
+
+    if [ "${resume_or_restart}" = 'R' ] ; then
+        # Resume download.
+        curl \
+            -C - \
+            -u "${nextcloud_share_token}:${nextcloud_share_password}" \
+            -o "${output_filename}" \
+            "${nextcloud_webdav_file_url}";
+
+        exit_code=$?;
+    else
+        if [ "${resume_or_restart}" = 'S' ] ; then
+            # Remove old output file before retrying to download the file.
+            rm "${output_filename}";
+        fi
+
+        # Download file.
+        curl \
+            -u "${nextcloud_share_token}:${nextcloud_share_password}" \
+            -o "${output_filename}" \
+            "${nextcloud_webdav_file_url}";
+
+        exit_code=$?;
+    fi
 
     printf '\n';
+
+    return ${exit_code};
 }
 
 
