@@ -266,9 +266,12 @@ main () {
 
     local -a nextcloud_share_list_selected_subdirs;
 
-    for file_or_dir_number in "${file_or_dir_numbers[@]}" ; do
-        if [ ${file_or_dir_number} -ge ${#nextcloud_dir_listing_array[@]} ] ; then
-            printf '\nError: File or dir number "%d" does not exist.\n\n' "${file_or_dir_number}";
+    for file_or_dir_number_str in "${file_or_dir_numbers[@]}" ; do
+        # Remove all non-numeric characters.
+        file_or_dir_number=$(echo ${file_or_dir_number_str} | tr -c -d '0-9');
+
+        if [[ "${file_or_dir_number_str}" != "${file_or_dir_number}" || "${file_or_dir_number}" -ge ${#nextcloud_dir_listing_array[@]} ]] ; then
+            printf '\nError: File or dir number "%s" does not exist.\n\n' "${file_or_dir_number_str}";
             return 1;
         fi
 
