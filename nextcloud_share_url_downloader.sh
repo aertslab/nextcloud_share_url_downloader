@@ -133,6 +133,7 @@ list_content_nextcloud_share_url () {
     curl \
         -s \
         -u "${nextcloud_share_token}:${nextcloud_share_password}" \
+        -H 'X-Requested-With: XMLHttpRequest' \
         -X PROPFIND \
         --data \
             '<?xml version="1.0" encoding="UTF-8"?>
@@ -211,6 +212,7 @@ download_file_from_nextcloud_share () {
         curl \
             -C - \
             -u "${nextcloud_share_token}:${nextcloud_share_password}" \
+            -H 'X-Requested-With: XMLHttpRequest' \
             -o "${output_filename}" \
             "${nextcloud_webdav_file_url}";
 
@@ -224,6 +226,7 @@ download_file_from_nextcloud_share () {
         # Download file.
         curl \
             -u "${nextcloud_share_token}:${nextcloud_share_password}" \
+            -H 'X-Requested-With: XMLHttpRequest' \
             -o "${output_filename}" \
             "${nextcloud_webdav_file_url}";
 
