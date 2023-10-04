@@ -240,7 +240,7 @@ download_file_from_nextcloud_share () {
 
 
 
-main () {
+nextcloud_share_url_downloader () {
     if ( [ "${#@}" -ne 1 ] && [ "${#@}" -ne 2 ] ) ; then
         usage;
         return 1;
@@ -300,9 +300,15 @@ main () {
         list_content_nextcloud_share_url;
     done
 
+    # If exactly 1 directory was selected for listing content, restart
+    # nextcloud_share_url_downloader in that subdirectory.
+    if [ "${#nextcloud_share_list_selected_subdirs[@]}" -eq 1 ] ; then
+        nextcloud_share_url_downloader "${nextcloud_share_url}?path=${nextcloud_share_subdir}" "${nextcloud_share_password}";
+    fi
+
     return 0;
 }
 
 
 
-main "${@}";
+nextcloud_share_url_downloader "${@}";
