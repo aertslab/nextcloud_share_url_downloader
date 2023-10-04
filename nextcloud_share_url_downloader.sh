@@ -128,7 +128,7 @@ list_content_nextcloud_share_url () {
     #   - Remove unneeded XML tags / replace XML tags with TABs.
     #   - Extract interesting columns with cut.
     #   - Remove lines which do not contain a file/folder path.
-    #   - Construct full URLs for each file/folder path. 
+    #   - Construct full URLs for each file/folder path.
     mapfile  nextcloud_dir_listing_array < <(
     curl \
         -s \
@@ -265,11 +265,19 @@ nextcloud_share_url_downloader () {
     # The results are stored in "${nextcloud_dir_listing_array[@]}".
     list_content_nextcloud_share_url;
 
-    read -a file_or_dir_numbers -p 'Give list of file numbers to download and or directories to list: '
+    read -a file_or_dir_numbers -p 'Give list of file numbers (e.g. "1 3 5 7-10") to download and or directories to list: '
+
+    file_or_dir_numbers=$(
+        eval echo $(
+            # Replace each range "x-y" with "{x..y}", whieh the outer echo and
+            # eval will expand to the individual values for that range.
+            echo "${file_or_dir_numbers}" | sed -e 's/\([0-9]\+\)-\([0-9]\+\)/{\1..\2}/g'
+        )
+    )
 
     local -a nextcloud_share_list_selected_subdirs;
 
-    for file_or_dir_number_str in "${file_or_dir_numbers[@]}" ; do
+    for file_or_dir_number_str in ${file_or_dir_numbers} ; do
         # Remove all non-numeric characters.
         file_or_dir_number=$(echo ${file_or_dir_number_str} | tr -c -d '0-9');
 
