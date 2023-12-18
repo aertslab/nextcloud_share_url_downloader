@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (c) 2018-2019 - Gert Hulselmans
+# Copyright (c) 2018-2023 - Gert Hulselmans
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -271,7 +271,7 @@ nextcloud_share_url_downloader () {
         eval echo $(
             # Replace each range "x-y" with "{x..y}", whieh the outer echo and
             # eval will expand to the individual values for that range.
-            echo "${file_or_dir_numbers}" | sed -e 's/\([0-9]\+\)-\([0-9]\+\)/{\1..\2}/g'
+            echo "${file_or_dir_numbers[@]}" | sed -e 's/\([0-9]\+\)-\([0-9]\+\)/{\1..\2}/g'
         )
     )
 
