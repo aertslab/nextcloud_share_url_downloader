@@ -211,6 +211,7 @@ download_file_from_nextcloud_share () {
         # Resume download.
         curl \
             -C - \
+            -R \
             -u "${nextcloud_share_token}:${nextcloud_share_password}" \
             -H 'X-Requested-With: XMLHttpRequest' \
             -o "${output_filename}" \
@@ -225,6 +226,7 @@ download_file_from_nextcloud_share () {
 
         # Download file.
         curl \
+            -R \
             -u "${nextcloud_share_token}:${nextcloud_share_password}" \
             -H 'X-Requested-With: XMLHttpRequest' \
             -o "${output_filename}" \
